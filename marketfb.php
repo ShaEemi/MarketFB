@@ -8,44 +8,58 @@
 require_once __DIR__ . '/php-graph-sdk-master/src/Facebook/autoload.php';
 
 
-$fb = new Facebook\Facebook([
-    'app_id' => '1411376042220980',
-    'app_secret' => '463e680acb1012c7ae26dee6c19e35a6',
-    'default_graph_version' => 'v2.5',
-    'default_access_token' => 'EAAUDo5ekHbQBAEbMuqLFK1ZASnRG3L6waa3AWDwZCIMdxfBcWogS4NPkLtLddZCUmZBCV52jAixQZA2rbZCb7nJSHF1zZAcb4YmqODEvfr8iYcgVxlqkXZBmrQ2Ry9LJa5GWh3xy6dEBPYldLjBYZAMnmZCrlvWC3A0WuOlJPuhVLDSwZDZD', // optional
-]);
+class fb {
 
-$response = $fb->get('/352286651772611?fields=feed{likes,message,full_picture},country_page_likes,about,name,photos,posts{story,id,likes},talking_about_count,username');
-//$response = $fb->get('/352286651772611?fields=feed{likes,message,full_picture},country_page_likes');
+    public $body;
 
-$body = json_decode($response->getBody());
+    function __construct(){
+        $fb = new Facebook\Facebook([
+            'app_id' => '1411376042220980',
+            'app_secret' => '463e680acb1012c7ae26dee6c19e35a6',
+            'default_graph_version' => 'v2.5',
+            'default_access_token' => 'EAAUDo5ekHbQBAN5fa7ZAg06y1lMZA3Job66A6Ghfkktyd1jG4ZBD8roJsx4HkjQpv6ePQuOraqhV3WmcY9SVp2ZCStmChgp67wbdRgZBaxv1AvxCcGBZAATSXFBaWPhaCnB6KHB3ROHs8mPcnz0Exapv4MvZBdqqoxN1d82OpM4BAZDZD', // optional
+        ]);
 
-/* handle the result */
+        $response = $fb->get('/352286651772611?fields=feed{likes,message,full_picture},country_page_likes,about,name,photos,posts{story,id,likes},talking_about_count,username');
+
+
+        $this->body = json_decode($response->getBody());
+    }
+
+    /* handle the result */
 
 
 //var_dump($body);
 
-/**
- *  Functions Api Facebook
- */
+    /**
+     *  Functions Api Facebook
+     */
 
-function countLikesPost($body)
-{
-    foreach (($body->posts->data) as $value) {
-        $count = count($value->likes->data);
 
-        echo '<div>' . $count . '</div>';
+    function linkPost(){
+        $pikachu = array();
+        foreach(($this->body->posts->data) as $posts){
+
+            $pikachu[] = array(
+                'nb_like' => count($posts->likes->data), 'posts' => $posts
+            );
+
+
+
+//            $idPost = $posts->id;
+//            $titlePost = $posts->story;
+//            echo '<a href=http://www.facebook.com/'.$idPost.'> '.$titlePost.' </a> <br/>';
+        }
+        usort($pikachu, array($this, 'comparison'));
+        $postTitle = $pikachu;
+        var_dump($pikachu);
+
+       // echo '<pre>' . print_r($pikachu,1).'</pre>';
+        //echo '<p>'. $postTitle .'</p>';
     }
-}
 
-//echo countLikesPost($body);
-
-
-function linkPost($body){
-    foreach(($body->posts->data) as $posts){
-        $idPost = $posts->id;
-        $titlePost = $posts->story;
-        echo '<a href=http://www.facebook.com/'.$idPost.'> '.$titlePost.' </a> <br/>';
+    function comparison($a, $b){
+        return $a['nb_like'] < $b['nb_like'];
     }
 }
 
@@ -95,33 +109,15 @@ class popularFbPosts extends WP_Widget {
            echo $args['before_title'] . $title . $args['after_title'];
        }
 
-       // query arguments
 
-       $query_args = array(
-           'post_type' => 'post',
-           'post_per_list' => 10,
-           'order' => 'DESC' //orderby : countlikePosts
-       );
 
-       // query
+       $fb = new fb();
 
-       $the_query = new WP_Query($query_args);
 
-       // query loop
+       $fb->linkPost();
 
-       if ($the_query->have_post()) {
-           echo '<ul>';
-           while ($the_query->have_post()) {
-               $the_query->the_post();
-               echo '<li>';
-               echo 'test';  // doit afficher la function linkPost
-               echo '</li>';
-           }
-           wp_reset_postdata();
-           echo '</ul>';
-       } else {
-           echo __(" You don't have any post on your Facebook Page", "marketFB");
-       }
+
+
        echo $args['after_widget'];
    }
 
