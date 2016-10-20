@@ -19,10 +19,10 @@
 
 ```
 
-1. Go to the link : [Facebook Api](https://developers.facebook.com/apps/)
+1. Go to the link : https://developers.facebook.com/apps/
 2. Click on your Api and take the Api Id and the secret key
-3. Go to the link : [Facebook Access Token](https://developers.facebook.com/tools/accesstoken/). Take the user token
-4. Go to the link : [Facebook Page Id](https://developers.facebook.com/tools/explorer/). click on the button 'get token',
+3. Go to the link : https://developers.facebook.com/tools/accesstoken/ . Take the user token
+4. Go to the link : https://developers.facebook.com/tools/explorer/ . click on the button 'get token',
 select your page, click on submit and take the 'id'.
 4. Into the Fb.php file complete with your informations. modify into the '{}' and don't forget to delete them !
 5. Now you can activate the plugin in wordpress
