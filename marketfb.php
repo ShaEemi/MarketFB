@@ -2,7 +2,7 @@
 /*
  *  Plugin Name: Facebook Market Like
  *  Description: Facebook Market Like is a plugin that allows companies to display a widget with the most beloved items facebook
- *  Version: 0.1
+ *  Version: 1.0
  *  Author: Sharon Colin
  */
 require_once __DIR__ . '/php-graph-sdk-master/src/Facebook/autoload.php';
@@ -20,7 +20,7 @@ class fb {
             'default_access_token' => 'EAAUDo5ekHbQBAPMcLz073eSZCRWIh7SzDfIIGQCehZBv054hgCcfMp1okhDMO1s5oj9qksuYi8l45bELJ0GfKLUQQqJoeiqfx9q0CSwZCDhFmImcmDKhffDfzEh0ZAUXz5pUPBB39o2jlr8chkqZCuZBXJg2S7Xus6pX21NykMHQZDZD', // optional
         ]);
 
-        $response = $fb->get('/352286651772611?fields=feed{likes,message,full_picture},country_page_likes,about,name,photos,posts{story,id,likes},talking_about_count,username');
+        $response = $fb->get('/352286651772611?fields=feed{likes,message,full_picture},country_page_likes,about,name,photos,posts.limit(10){story,id,likes},talking_about_count,username');
 
 
         $this->body = json_decode($response->getBody());
@@ -133,7 +133,7 @@ class popularFbPosts extends WP_Widget {
         if(isset($instance['title'])){
             $title = $instance['title'];
         }else{
-            $title = __("Popular Facebook Post", "marketFB");
+            $title = __("Popular Facebook Posts", "marketFB");
         }
         ?>
         <p>
