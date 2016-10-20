@@ -17,7 +17,7 @@ class fb {
             'app_id' => '1411376042220980',
             'app_secret' => '463e680acb1012c7ae26dee6c19e35a6',
             'default_graph_version' => 'v2.5',
-            'default_access_token' => 'EAAUDo5ekHbQBAN5fa7ZAg06y1lMZA3Job66A6Ghfkktyd1jG4ZBD8roJsx4HkjQpv6ePQuOraqhV3WmcY9SVp2ZCStmChgp67wbdRgZBaxv1AvxCcGBZAATSXFBaWPhaCnB6KHB3ROHs8mPcnz0Exapv4MvZBdqqoxN1d82OpM4BAZDZD', // optional
+            'default_access_token' => 'EAAUDo5ekHbQBAPMcLz073eSZCRWIh7SzDfIIGQCehZBv054hgCcfMp1okhDMO1s5oj9qksuYi8l45bELJ0GfKLUQQqJoeiqfx9q0CSwZCDhFmImcmDKhffDfzEh0ZAUXz5pUPBB39o2jlr8chkqZCuZBXJg2S7Xus6pX21NykMHQZDZD', // optional
         ]);
 
         $response = $fb->get('/352286651772611?fields=feed{likes,message,full_picture},country_page_likes,about,name,photos,posts{story,id,likes},talking_about_count,username');
@@ -52,10 +52,11 @@ class fb {
         }
         usort($pikachu, array($this, 'comparison'));
         $postTitle = $pikachu;
-        var_dump($pikachu);
+        foreach($pikachu as $pika) {
+            echo '<a href=http://www.facebook.com/'.$pika['posts']->id.'> '. $pika['posts']->story.' </a> <br/>';
+        }
 
-       // echo '<pre>' . print_r($pikachu,1).'</pre>';
-        //echo '<p>'. $postTitle .'</p>';
+
     }
 
     function comparison($a, $b){
@@ -153,7 +154,7 @@ class popularFbPosts extends WP_Widget {
      * @return array Updated safe values to be saved.
      */
 
-    public function updateTitle($new_instance, $old_instance){
+    public function updateTitle($new_instance){
         $instance = array();
         $instance['title'] = (!empty($new_instance['title'])) ? strip_tags($new_instance['title']): "";
         return $instance;
