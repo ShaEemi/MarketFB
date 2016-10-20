@@ -7,69 +7,7 @@
  */
 require_once __DIR__ . '/php-graph-sdk-master/src/Facebook/autoload.php';
 
-
-class fb {
-
-    public $body;
-
-    function __construct(){
-        $fb = new Facebook\Facebook([
-            'app_id' => '1411376042220980',
-            'app_secret' => '463e680acb1012c7ae26dee6c19e35a6',
-            'default_graph_version' => 'v2.5',
-            'default_access_token' => 'EAAUDo5ekHbQBAPMcLz073eSZCRWIh7SzDfIIGQCehZBv054hgCcfMp1okhDMO1s5oj9qksuYi8l45bELJ0GfKLUQQqJoeiqfx9q0CSwZCDhFmImcmDKhffDfzEh0ZAUXz5pUPBB39o2jlr8chkqZCuZBXJg2S7Xus6pX21NykMHQZDZD', // optional
-        ]);
-
-        $response = $fb->get('/352286651772611?fields=feed{likes,message,full_picture},country_page_likes,about,name,photos,posts.limit(10){story,id,likes},talking_about_count,username');
-
-
-        $this->body = json_decode($response->getBody());
-    }
-
-    /* handle the result */
-
-
-//var_dump($body);
-
-    /**
-     *  Functions Api Facebook
-     */
-
-
-    function linkPost(){
-        $pikachu = array();
-        foreach(($this->body->posts->data) as $posts){
-
-            $pikachu[] = array(
-                'nb_like' => count($posts->likes->data), 'posts' => $posts
-            );
-
-
-
-//            $idPost = $posts->id;
-//            $titlePost = $posts->story;
-//            echo '<a href=http://www.facebook.com/'.$idPost.'> '.$titlePost.' </a> <br/>';
-        }
-        usort($pikachu, array($this, 'comparison'));
-        $postTitle = $pikachu;
-        foreach($pikachu as $pika) {
-            echo '<a href=http://www.facebook.com/'.$pika['posts']->id.'> '. $pika['posts']->story.' </a> <br/>';
-        }
-
-
-    }
-
-    function comparison($a, $b){
-        return $a['nb_like'] < $b['nb_like'];
-    }
-}
-
-//echo linkPost($body);
-
-
-//die();
-
-
+require_once( 'Fb.php' );
 
 /**
  *  Translation Function
@@ -82,87 +20,10 @@ load_plugin_textdomain( 'marketFb', false, plugin_basename( dirname( __FILE__ ) 
  *  Creation du widget
  */
 
-class popularFbPosts extends WP_Widget {
-    /***** Register widget with Wordpress. ******/
-    function __construct(){
-        parent::__construct(
-          'popularFbPosts',
-          __('Popular Facebook Posts','marketFb'),
-          array('description' => __('The ten most liked posts on the facebook page', 'marketFb'),
-          )
-        );
-    }
+require_once( 'PopularFbPosts.php' );
 
-    /**
-     *	Fond-end display of widget.
-     *	@see WP_Widget::widget()
-     *
-     *	@param array $args   Widget arguments.
-     *	@param array $instance Saved values from database.
-     */
-
-   public function widget($args, $instance)
-   {
-
-       $title = apply_filters('widget_title', $instance['title']);
-       echo $args['before_widget'];
-       if (!empty($title)) {
-           echo $args['before_title'] . $title . $args['after_title'];
-       }
-
-
-
-       $fb = new fb();
-
-
-       $fb->linkPost();
-
-
-
-       echo $args['after_widget'];
-   }
-
-    /**
-     *	Back-end widget form.
-     *	@see WP_Widget::form()
-     *
-     *	@param array $instance Previously saved values from database.
-     */
-
-   public function form($instance){
-        if(isset($instance['title'])){
-            $title = $instance['title'];
-        }else{
-            $title = __("Popular Facebook Posts", "marketFB");
-        }
-        ?>
-        <p>
-            <label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title: ', 'marketFB'); ?></label>
-            <input type="text" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" value="<?php echo esc_attr($instance['title']) ;?>"/>
-        </p>
-    <?php
-   }
-
-    /**
-     * Sanitize widget form values as they are saved.
-     *
-     * @see WP_Widget::update()
-     *
-     * @param array $new_instance Values just sent to be saved.
-     * @param array $old_instance Previously saved values from database.
-     *
-     * @return array Updated safe values to be saved.
-     */
-
-    public function updateTitle($new_instance){
-        $instance = array();
-        $instance['title'] = (!empty($new_instance['title'])) ? strip_tags($new_instance['title']): "";
-        return $instance;
-    }
+function register_popularFbPosts_widget() {
+    register_widget( 'popularFbPosts' );
 }
 
-function register_popularFbPosts_widget(){
-    register_widget('popularFbPosts');
-}
-
-add_action('widgets_init', 'register_popularFbPosts_widget');
+add_action( 'widgets_init', 'register_popularFbPosts_widget' );
