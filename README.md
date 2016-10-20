@@ -13,7 +13,11 @@
 3. Download this folder
 4. puch it into the folder of Wordpress/wp-contents/plugins
 
+```
+
 ##### Modify the "Fb.php" file
+
+```
 
 1. Go to the link : [Facebook Api](https://developers.facebook.com/apps/)
 2. Click on your Api and take the Api Id and the secret key
